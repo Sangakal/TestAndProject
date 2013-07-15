@@ -4,12 +4,64 @@
    <title>First App</title>
    <script src="cordova.js"></script>
    <script src="test.js"></script>
+   <script type="text/javascript" charset="utf-8">
+    // Wait for Cordova to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    // Populate the database 
+    //
+    function populateDB(tx) {
+        tx.executeSql('DROP TABLE IF EXISTS PHONENUMBER');
+        tx.executeSql('CREATE TABLE IF NOT EXISTS PHONENUMBER (id unique, data)');
+        tx.executeSql('INSERT INTO PHONENUMBER (id, data) VALUES (1, "9899978787")');
+    }
+
+    // Transaction error callback
+    //
+    function errorCB(err) {
+        console.log("Error processing SQL: "+err.code);
+    }
+
+    // Cordova is ready
+    //
+    function onDeviceReady() {
+        var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+        db.transaction(populateDB, errorCB);
+    }
+</script>
+
+   
+     <style type="text/css">
+         #btnFire
+         {
+             width: 77px;
+             margin-left: 0px;
+         }
+     </style>
+
    
  </head>
- <body onload="init();">
-    <h1>Alert App</h1>
+ <body>
+    <h1>&nbsp;</h1>
     <form>
-        <input type="button" value="Alert" onclick="msg()" />
+    <div>
+    <table>
+    <tr>
+      <td><input type="button" value="Settings" onclick="msg()" id="btnSettings"/></td>
+      <td align="right"><input type="button" value="Contacts" onclick="msg()" id="btnContacts"/> <br /></td>
+    </tr>
+    <tr>
+       <td colspan="2"><input type="button" value="Alert" onclick="msg()" color = "red"  id="btnAlert"
+            style="text-align:center;  width: 267px; height: 152px; background-color:Red"/>
+       </td>
+    </tr>
+    <tr>
+      <td><input type="button" value="Medical" onclick="msg()" id="btnMedical"/></td>
+      <td align="right"><input type="button" value="Fire" onclick="msg()" id="btnFire"/> <br /></td>
+    </tr>
+    </table>
+    </div>
     </form>
 </body>
 </html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Timer</title>
+   <script src="cordova.js"></script>
+   <script src="SmsSendingPlugin.js"></script>
+</head>
+<body>
+
+<p>Script for the alert message goes here</p>
+<p id="demo"></p>
+<img src="images\countdown-1.gif" style="width: 305px; height: 203px"><br><br>
+<button onclick="myStopFunction()">Cancel Send</button>
+
+<script>
+var count = 7;
+var myVar=setInterval(function(){myTimer()},1000);
+var phoneNumber;
+    
+    function alertPhoneNumber() {
+        var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+        db.transaction(queryDB, errorCB);
+    }
+    
+     // Query the database
+    //
+    function queryDB(tx) {
+        tx.executeSql('SELECT * FROM PHONENUMBER', [], querySuccess, errorCB);
+    }
+
+    function querySuccess(tx, results) {
+    var len = results.rows.length;
+    console.log("PHONENUMBER table: " + len + " rows found.");
+    for (var i=0; i<len; i++){
+        console.log("Row = " + i + " ID = " + results.rows.item(i).id + " Data =  " + results.rows.item(i).data);
+        phoneNumber = results.rows.item(i).data;
+        break;
+       }
+       
+       if(connectionExists)
+       {
+         navigator.notification.alert('Alert Raised to ' + phoneNumber,alertDismissed,'Alert Raised','OK');
+       }
+    }
+    
+    // Transaction error callback
+    //
+    function errorCB(err) {
+        console.log("Error processing SQL: "+err.code);
+    }
+
+	function sendSMS()
+	{
+		var smsSendingPlugin = cordova.require('cordova/plugin/smssendingplugin');
+		
+		smsSendingPlugin.isSupported ((function(supported) {
+	    if(supported) 
+	      alert("SMS supported !");
+	    else
+	      alert("SMS not supported");
+		  }), function() {
+		    alert("Error while checking the SMS support");
+		  });
+		  
+		  smsSendingPlugin.send ("918105302635", "Hello World !", function() {
+		    alert("Message sent :-)");
+		  }, function() {
+		    alert("Message not sent :s");
+		  });
+	}
+
+	function myTimer()
+	{
+	//document.getElementById("demo").innerHTML=count;
+	count = count -1 ;
+	if(count==0)
+	 {
+	   clearInterval(myVar);
+	   alertPhoneNumber();
+	 }
+	}
+	function alertDismissed()
+	{
+	  window.open('index.html','','width=600,height=250'); 
+	}
+	function myStopFunction()
+	{
+	  clearInterval(myVar);
+	  //navigator.notification.alert('Alert Dismissed',alertDismissed,'Alert Raised','OK');
+	  //navigator.notification.alert('Alert Dismissed',sendSMS,'Alert Raised','OK');
+	  sendSMS();
+	}
+	
+	function connectionExists() {
+	    var networkState = navigator.network.connection.type;
+	    if (!networkState.equals(Connection.NONE))
+	    {
+	      return true;
+	    }
+	}
+
+</script>
+
+</body>
+</html>

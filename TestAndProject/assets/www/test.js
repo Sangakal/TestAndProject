@@ -1,8 +1,8 @@
-function init() {
+/*function init() {
     document.addEventListener("deviceready", deviceInfo, true);
-}
+}*/
 
 function msg()
 {
-    alert("Alert Raised");
+   window.open('timer.html','','width=600,height=250');
 }
